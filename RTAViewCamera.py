@@ -133,13 +133,32 @@ class ChacoViewCamera(HasTraits, Ice.Application):
         HasTraits.__init__(self,**traits)
 
         plots = {}
-        container = OverlayPlotContainer(padding = 50, fill_padding = True,
+        self.container = OverlayPlotContainer(padding = 50, fill_padding = True,
                                          bgcolor = "lightgray", use_backbuffer=True)
         self.jtrig = 0
+        self.trigTelType = 0
+        self.CAMERAlayout = ArrayPlotData()
+
+
+    def run(self, args):
+        print "running!"
+        print args[0]
+        print args[1]
+        if len(args) > 2:
+            print(self.appName() + ": too many arguments")
+            return 1
 
         # HERE goes the telescope type given by the "real" event
-        self.trigTelType = LType
-        print self.trigTelType
+        if args[1] == '1':
+            self.trigTelType = LType
+            print "Large telescope loaded."
+        elif args[1] == '2':
+            self.trigTelType = MType
+            print "Medium telescope loaded."
+        elif args[1] == '3':
+            self.trigTelType = SType
+            print "Small telescope loaded."
+
         # HERE use RTAConfig to load the pixel position
         L0ID_sel = L0ID[np.where(TelType == self.trigTelType)]
         L0ID_sel = L0ID_sel[0]
@@ -153,7 +172,6 @@ class ChacoViewCamera(HasTraits, Ice.Application):
         selFADC = startFADC
 
         # Plot all telescopes
-        self.CAMERAlayout = ArrayPlotData()
         self.CAMERAlayout.set_data('xpixel', selXTubeMM)
         self.CAMERAlayout.set_data('ypixel', selYTubeMM)
         self.CAMERAlayout.set_data('FADCpixel', selFADC)
@@ -196,19 +214,13 @@ class ChacoViewCamera(HasTraits, Ice.Application):
         self.colorbar.padding_bottom = self.plotCAMERA.padding_bottom
 
         # Create a container to position the plot and the colorbar side-by-side
-        container = HPlotContainer(use_backbuffer = True)
-        container.add(self.plotCAMERA)
-        container.add(self.colorbar)
-        container.bgcolor = "lightgray"
+        self.container = HPlotContainer(use_backbuffer = True)
+        self.container.add(self.plotCAMERA)
+        self.container.add(self.colorbar)
+        self.container.bgcolor = "lightgray"
 
-        self.plot = container
+        self.plot = self.container
         print "End init."
-
-    def run(self, args):
-        print "running!"
-        if len(args) > 1:
-            print(self.appName() + ": too many arguments")
-            return 1
 
         adapter = self.communicator().createObjectAdapter("RTAViewCamera")
         adapter.add(ViewerI(self), self.communicator().stringToIdentity("viewcamera"))
@@ -221,4 +233,4 @@ class ChacoViewCamera(HasTraits, Ice.Application):
 
 if __name__ == "__main__":
     viewer = ChacoViewCamera()
-    sys.exit(viewer.main(sys.argv, "config.server"))
+    sys.exit(viewer.main(sys.argv, "config.server1"))
