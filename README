@@ -1,0 +1,16 @@
+The RTAViewCamera visualize a single telescope.
+
+Requires the following python packages in order to run:
+  numpy
+  chaco
+  pyfits
+
+To launch the viewer just run:
+  $ ./RTAViewCamera.py <teltype>
+
+where <teltype> stands for:
+1 - large
+2 - medium
+3 - small
+
+Then use a client application that sends data to this viewer (like RTAWave).
