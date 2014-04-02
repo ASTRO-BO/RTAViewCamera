@@ -1,4 +1,4 @@
-RTAViewCamera.Endpoints=default -p 10102 -h localhost
+RTAViewCamera.Endpoints=default -p 10113 -h localhost
 
 #
 # Warn about connection exceptions
