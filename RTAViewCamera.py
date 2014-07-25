@@ -21,6 +21,7 @@ import Ice
 import numpy as np
 import sys
 import random
+import os
 
 # Chaco modules 
 from chaco.api import ArrayPlotData, Plot, OverlayPlotContainer, jet, \
@@ -31,12 +32,15 @@ from traitsui.api import Item, Group, View
 from chaco.tools.api import PanTool, ZoomTool, DragZoom
 
 # Load slice definition
-Ice.loadSlice('RTAViewCamera.ice')
+confdir=os.environ["CTARTA"]+"/share/viewcamera/"
+
+Ice.loadSlice(confdir+"RTAViewCamera.ice")
+
 Ice.updateModules()
 import CTA
 
 # open the fits file
-hdulist_conf = pyfits.open('./PROD2_telconfig.fits.gz')
+hdulist_conf = pyfits.open(confdir+"PROD2_telconfig.fits.gz")
 datal0_conf = hdulist_conf[1].data
 colsl0_conf = hdulist_conf[1].columns
 namesl0_field = colsl0_conf.names
@@ -233,4 +237,4 @@ class ChacoViewCamera(HasTraits, Ice.Application):
 
 if __name__ == "__main__":
     viewer = ChacoViewCamera()
-    sys.exit(viewer.main(sys.argv, "config.server1"))
+    sys.exit(viewer.main(sys.argv))
